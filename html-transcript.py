@@ -122,8 +122,8 @@ def write_html_transcript(messages, outfile, imgcache):
 def write_html(folder, messages, emoji=True):
     imgcache = ImageCache(folder)
     index_fn = os.path.join(folder, 'index.html')
-    shutil.copyfile('assets/groupme.css', os.path.join(folder, 'groupme.css'))
-    shutil.copyfile('assets/groupme.js', os.path.join(folder, 'groupme.js'))
+    shutil.copyfile(sys.path[0] + '/assets/groupme.css', os.path.join(folder, 'groupme.css'))
+    shutil.copyfile(sys.path[0] + '/assets/groupme.js', os.path.join(folder, 'groupme.js'))
     with open(index_fn, 'w') as f:
         f.write(_HTML_HEADER)
         write_html_transcript(messages, f, imgcache)
