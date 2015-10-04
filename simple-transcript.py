@@ -21,7 +21,7 @@ def printTranscript(messages, outputFilename):
             else:
                 text = "(no text)"
 
-            if message[u'system'] is True:
+            if message.get(u'system', None) is True:
                 system_padded = '(SYS) '
             else:
                 system_padded = ''
@@ -31,10 +31,12 @@ def printTranscript(messages, outputFilename):
             else:
                 favorites_padded = ''
 
-            if message[u'picture_url'] is not None:
+            pic = ''
+            if message.get(u'picture_url') is not None:
                 pic = ' ; photo URL ' + message[u'picture_url']
-            else:
-                pic = ''
+            elif message.get(u'attachments', []) != []:
+                if message[u'attachments'][0].get(u'type', None) in ['image', 'linked_image']:
+                    pic = ' ; photo URL ' + message[u'attachments'][0][u'url']
 
             line = u'{0}{1}({2}){3}: {4}{5}\n'.format(
                 system_padded, name, time, favorites_padded, text, pic

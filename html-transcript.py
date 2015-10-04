@@ -79,10 +79,18 @@ def write_html_transcript(messages, outfile, imgcache):
         text = message[u'text']
         if text is None:
             text = u''
-        system = message[u'system']
+        system = message.get(u'system', None)
         faves = message[u'favorited_by']
         nlikes = faves if faves == 0 else len(faves)
-        pic = message[u'picture_url']
+        pic = message.get(u'picture_url', None)
+
+        # Picture is included as an attachment on direct messages.
+        # This might have to be rewritten if there are ever multiple images
+        # attached to a single message. Right now I've only seen multiple
+        # attachments for emoji.
+        if message.get(u'attachments', []) != []:
+            if message[u'attachments'][0].get(u'type', None) in ['image', 'linked_image']:
+                pic = message[u'attachments'][0][u'url']
 
 
         # Open div

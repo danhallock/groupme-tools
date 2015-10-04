@@ -34,7 +34,7 @@ def main():
     specific message IDs
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('group')
+    parser.add_argument('group', help="The group id (for group chats) or other_user_id (for direct messages) from your GroupMe Web session")
     parser.add_argument('accessToken')
     parser.add_argument("--resumePrevious", action='store_true', default=False, help="Resume based on the last found files and get previous messages.")
     parser.add_argument("--resumeNext", action='store_true', default=False, help="Resume based on the last found files and get next messages.")
@@ -42,6 +42,7 @@ def main():
     parser.add_argument("--newest", help="The ID of the newest (bottom-most) message in the existing transcript file")
     parser.add_argument("--pages", type=int,
                         help="The number of pages to pull down (defaults to as many as the conversation has")
+    parser.add_argument("--mode", default="group", help="Type of chat to download: 'group' or 'direct_messages'. Defaults to group.")
 
     args = parser.parse_args()
 
@@ -50,6 +51,7 @@ def main():
     beforeId = args.oldest
     stopId = args.newest
     pages = args.pages
+    mode = args.mode
 
     transcriptFileName = 'transcript-{0}.json'.format(group)
     transcript = loadTranscript(transcriptFileName)
@@ -64,7 +66,7 @@ def main():
             else:
                 stopId = transcript[-1]['id']
 
-    transcript = populateTranscript(group, accessToken, transcript, beforeId, stopId, pages)
+    transcript = populateTranscript(group, accessToken, transcript, beforeId, stopId, mode, pages)
 
     # sort transcript in chronological order
     transcript = sorted(transcript, key=lambda k: k[u'created_at'])
@@ -120,10 +122,13 @@ def loadTempTranscript(tempFileName):
     return []
 
 
-def populateTranscript(group, accessToken, transcript, beforeId, stopId, pageLimit=None):
+def populateTranscript(group, accessToken, transcript, beforeId, stopId, mode, pageLimit=None):
     complete = False
     pageCount = 0
-    endpoint = 'https://v2.groupme.com/groups/' + group + '/messages'
+    if mode == 'direct_messages':
+        endpoint = 'https://api.groupme.com/v3/direct_messages?other_user_id=' + group
+    else:
+        endpoint = 'https://v2.groupme.com/groups/' + group + '/messages'
     headers = {
         'Accept': 'application/json, text/javascript',
         'Accept-Charset': 'ISO-8859-1,utf-8',

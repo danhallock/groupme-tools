@@ -12,13 +12,13 @@ The files in the `stat` folder are self-explanatory; they allow for learning int
 
 Log into [GroupMe's web interface](https://web.groupme.com/groups) and use Chrome or Safari's inspector to monitor the network requests when you load one of your groups.
 
-You'll notice a GET request to an endpoint `https://v2.groupme.com/groups/GROUP_ID/messages`.
+You'll notice a GET request to an endpoint `https://v2.groupme.com/groups/GROUP_ID/messages` for a group chat, or `https://api.groupme.com/v3/direct_messages?other_user_id=OTHER_USER_ID` for direct messages.
 
 One of the headers sent with that request, `X-Access-Token`, is your access token.
 
 ## Finding your group ID
 
-Again, in GroupMe's web interface, the group ID is the numeric ID included in the group's URL (`https://web.groupme.com/groups/GROUP_ID`).
+Again, in GroupMe's web interface, the group ID is the numeric ID included in the group's URL (`https://web.groupme.com/groups/GROUP_ID`). For direct messages, you'll need the other_user_id.
 
 ## Requirements/Dependencies/Python
 
